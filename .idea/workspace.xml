@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="141fde22-d36d-4d30-b83f-f1dac64bab5b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/lab3/lab3personal.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lab3/lab3sklearn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lab3/lab3.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datafiles/hw3_output.csv" beforeDir="false" afterPath="$PROJECT_DIR$/datafiles/hw3_output.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lab3/lab3sklearn.py" beforeDir="false" afterPath="$PROJECT_DIR$/lab3/lab3sklearn.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,22 +14,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lab3/lab3personal.py">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/lab3/lab3sklearn.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="509">
-              <caret line="115" column="16" selection-start-line="115" selection-end-line="116" />
+            <state relative-caret-position="210">
+              <caret line="32" selection-start-line="32" selection-start-column="2" selection-end-line="33" selection-end-column="64" />
+              <folding>
+                <element signature="e#235#262#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/lab3/lab3sklearn.py">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lab1/hw1_program.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="18" column="4" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
+            <state relative-caret-position="3165">
+              <caret line="211" column="17" selection-start-line="211" selection-start-column="17" selection-end-line="211" selection-end-column="17" />
               <folding>
-                <element signature="e#0#27#0" expanded="true" />
+                <element signature="e#177#197#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -38,7 +40,11 @@
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/datafiles/hw3_output.csv">
-          <provider selected="true" editor-type-id="csv-text-editor" />
+          <provider selected="true" editor-type-id="csv-text-editor">
+            <state>
+              <caret column="56" lean-forward="true" selection-start-column="56" selection-end-column="56" />
+            </state>
+          </provider>
           <provider editor-type-id="csv-table-editor">
             <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
           </provider>
@@ -85,6 +91,10 @@
       <find>prior</find>
       <find>fit</find>
       <find>training_fraction</find>
+      <find>‘</find>
+      <find>’</find>
+      <find>number</find>
+      <find>merged</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -100,9 +110,9 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="width" value="949" />
-    <option name="height" value="1053" />
+  <component name="ProjectFrameBounds" extendedState="4">
+    <option name="width" value="959" />
+    <option name="height" value="1052" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -125,6 +135,11 @@
             <path>
               <item name="cs74" type="b2602c69:ProjectViewProjectNode" />
               <item name="cs74" type="462c0819:PsiDirectoryNode" />
+              <item name="lab1" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cs74" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cs74" type="462c0819:PsiDirectoryNode" />
               <item name="lab3" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -138,12 +153,12 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/datafiles" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/lab3" />
       <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/datafiles" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -297,15 +312,33 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="-1" width="1920" height="1053" extended-state="6" />
-    <editor active="true" />
+    <frame x="0" y="-1" width="1920" height="1053" extended-state="7" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.0975224" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.0975224" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.20043103" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.26989248" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.20021528" />
+      <window_info anchor="bottom" id="Debug" order="2" weight="0.39957035" />
+      <window_info anchor="bottom" id="Cvs" order="3" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="4" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="5" weight="0.3297414" />
+      <window_info anchor="bottom" id="Version Control" order="6" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.18729816" />
+      <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
+      <window_info anchor="bottom" id="Python Console" order="9" weight="0.32938644" />
+      <window_info active="true" anchor="bottom" id="Run" order="10" visible="true" weight="0.29784948" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+    <layout-to-restore>
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.0975224" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.20021528" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.26989248" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39957035" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -317,7 +350,7 @@
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-    </layout>
+    </layout-to-restore>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/hw1_output_booleans.txt" />
@@ -347,26 +380,17 @@
         <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lab1/hw1_program.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="989">
-          <caret line="211" column="17" selection-start-line="211" selection-start-column="17" selection-end-line="211" selection-end-column="17" />
-          <folding>
-            <element signature="e#177#197#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/datafiles/hw3_test_data.csv">
       <provider selected="true" editor-type-id="csv-text-editor" />
       <provider editor-type-id="csv-table-editor">
         <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datafiles/hw3_output.csv">
-      <provider selected="true" editor-type-id="csv-text-editor" />
-      <provider editor-type-id="csv-table-editor">
-        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
+    <entry file="file://$PROJECT_DIR$/lab3/lab3personal.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="509">
+          <caret line="115" column="16" selection-start-line="115" selection-end-line="116" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/datafiles/hw1_trainingset.csv">
@@ -379,19 +403,35 @@
         <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lab3/lab3personal.py">
+    <entry file="file://$PROJECT_DIR$/datafiles/hw3_output.csv">
+      <provider selected="true" editor-type-id="csv-text-editor">
+        <state>
+          <caret column="56" lean-forward="true" selection-start-column="56" selection-end-column="56" />
+        </state>
+      </provider>
+      <provider editor-type-id="csv-table-editor">
+        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lab1/hw1_program.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="509">
-          <caret line="115" column="16" selection-start-line="115" selection-end-line="116" />
+        <state relative-caret-position="3165">
+          <caret line="211" column="17" selection-start-line="211" selection-start-column="17" selection-end-line="211" selection-end-column="17" />
+          <folding>
+            <element signature="e#177#197#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/lab3/lab3sklearnBACKUP.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/lab3/lab3sklearn.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="4" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
+        <state relative-caret-position="210">
+          <caret line="32" selection-start-line="32" selection-start-column="2" selection-end-line="33" selection-end-column="64" />
           <folding>
-            <element signature="e#0#27#0" expanded="true" />
+            <element signature="e#235#262#0" expanded="true" />
           </folding>
         </state>
       </provider>
