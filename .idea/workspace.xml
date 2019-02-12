@@ -2,9 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="141fde22-d36d-4d30-b83f-f1dac64bab5b" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/lab3/hw3_output.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/datafiles/hw3_output.csv" beforeDir="false" afterPath="$PROJECT_DIR$/datafiles/hw3_output.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lab3/lab3sklearn.py" beforeDir="false" afterPath="$PROJECT_DIR$/lab3/lab3sklearn.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/datafiles/hw1_results.csv" beforeDir="false" afterPath="$PROJECT_DIR$/lab1/hw1_results.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/datafiles/hw1_testset.csv" beforeDir="false" afterPath="$PROJECT_DIR$/lab1/hw1_testset.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/datafiles/hw1_trainingset.csv" beforeDir="false" afterPath="$PROJECT_DIR$/lab1/hw1_trainingset.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/datafiles/hw3_output.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datafiles/hw3_test_data.csv" beforeDir="false" afterPath="$PROJECT_DIR$/lab3/hw3_test_data.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/datafiles/hw3_training_data.csv" beforeDir="false" afterPath="$PROJECT_DIR$/lab3/hw3_training_data.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lab1/hw1_program.py" beforeDir="false" afterPath="$PROJECT_DIR$/lab1/hw1_program.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lab3/lab3personal.py" beforeDir="false" afterPath="$PROJECT_DIR$/lab3/hw3_personal.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lab3/lab3sklearn.py" beforeDir="false" afterPath="$PROJECT_DIR$/lab3/hw3_sklearn.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,46 +23,32 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/lab3/lab3sklearn.py">
+        <entry file="file://$PROJECT_DIR$/lab3/hw3_sklearn.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="32" selection-start-line="32" selection-start-column="2" selection-end-line="33" selection-end-column="64" />
+            <state relative-caret-position="450">
+              <caret line="66" column="43" selection-start-line="66" selection-start-column="43" selection-end-line="66" selection-end-column="43" />
               <folding>
-                <element signature="e#235#262#0" expanded="true" />
+                <element signature="e#1587#1614#0" expanded="true" />
+                <element signature="e#300#811#0" />
+                <element signature="e#6864#7007#0" />
+                <element signature="e#5134#6482#0" />
+                <element signature="e#6826#7536#0" />
+                <element signature="e#4494#5863#0" />
+                <element signature="e#9419#10484#0" />
+                <element signature="e#6856#6988#0" />
+                <element signature="e#5545#5732#0" />
+                <element signature="e#5776#6499#0" />
+                <element signature="e#11349#11765#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lab1/hw1_program.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3165">
-              <caret line="211" column="17" selection-start-line="211" selection-start-column="17" selection-end-line="211" selection-end-column="17" />
-              <folding>
-                <element signature="e#177#197#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/datafiles/hw3_output.csv">
+        <entry file="file://$PROJECT_DIR$/lab3/hw3_output.csv">
           <provider selected="true" editor-type-id="csv-text-editor">
             <state>
               <caret column="56" lean-forward="true" selection-start-column="56" selection-end-column="56" />
-            </state>
-          </provider>
-          <provider editor-type-id="csv-table-editor">
-            <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/datafiles/hw1_trainingset.csv">
-          <provider selected="true" editor-type-id="csv-text-editor">
-            <state>
-              <caret column="28" lean-forward="true" selection-end-line="1" />
             </state>
           </provider>
           <provider editor-type-id="csv-table-editor">
@@ -95,6 +89,10 @@
       <find>’</find>
       <find>number</find>
       <find>merged</find>
+      <find>svm.fit</find>
+      <find>svm.predict</find>
+      <find>0.0</find>
+      <find>lift_cap</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -104,13 +102,14 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/hw1_program.py" />
-        <option value="$PROJECT_DIR$/lab1/hw1_program.py" />
         <option value="$PROJECT_DIR$/lab3/lab3.py" />
+        <option value="$PROJECT_DIR$/lab1/hw1_program.py" />
         <option value="$PROJECT_DIR$/lab3/lab3sklearn.py" />
+        <option value="$PROJECT_DIR$/lab3/hw3_sklearn.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="4">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="width" value="959" />
     <option name="height" value="1052" />
   </component>
@@ -158,6 +157,8 @@
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/lab1" />
+      <recent name="$PROJECT_DIR$/lab3" />
       <recent name="$PROJECT_DIR$/datafiles" />
     </key>
   </component>
@@ -249,7 +250,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lab3/lab3personal.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lab3/hw3_personal.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -270,7 +271,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lab3/lab3sklearn.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lab3/hw3_sklearn.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -312,13 +313,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="-1" width="1920" height="1053" extended-state="7" />
+    <frame x="0" y="-1" width="1920" height="1053" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.0975224" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.0722193" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.20021528" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.2" />
       <window_info anchor="bottom" id="Debug" order="2" weight="0.39957035" />
       <window_info anchor="bottom" id="Cvs" order="3" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="4" weight="0.4" />
@@ -327,7 +329,7 @@
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.18729816" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="9" weight="0.32938644" />
-      <window_info active="true" anchor="bottom" id="Run" order="10" visible="true" weight="0.29784948" />
+      <window_info active="true" anchor="bottom" id="Run" order="10" visible="true" weight="0.19569893" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -360,19 +362,19 @@
     <entry file="file://$PROJECT_DIR$/hw1_results.csv" />
     <entry file="file://$PROJECT_DIR$/hw1_testset.csv" />
     <entry file="file://$PROJECT_DIR$/hw1_trainingset.csv" />
-    <entry file="file://$PROJECT_DIR$/datafiles/hw1_results.csv">
+    <entry file="file://$PROJECT_DIR$/lab1/hw1_results.csv">
       <provider selected="true" editor-type-id="csv-text-editor" />
       <provider editor-type-id="csv-table-editor">
         <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datafiles/hw1_testset.csv">
+    <entry file="file://$PROJECT_DIR$/lab1/hw1_testset.csv">
       <provider selected="true" editor-type-id="csv-text-editor" />
       <provider editor-type-id="csv-table-editor">
         <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datafiles/hw3_training_data.csv">
+    <entry file="file://$PROJECT_DIR$/lab3/hw3_training_data.csv">
       <provider selected="true" editor-type-id="csv-text-editor">
         <state relative-caret-position="-83478" />
       </provider>
@@ -380,20 +382,23 @@
         <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datafiles/hw3_test_data.csv">
-      <provider selected="true" editor-type-id="csv-text-editor" />
-      <provider editor-type-id="csv-table-editor">
-        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lab3/lab3personal.py">
+    <entry file="file://$PROJECT_DIR$/lab3/hw3_personal.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="509">
           <caret line="115" column="16" selection-start-line="115" selection-end-line="116" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datafiles/hw1_trainingset.csv">
+    <entry file="file://$PROJECT_DIR$/lab3/lab3sklearnBACKUP.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lab3/hw3_test_data.csv">
+      <provider selected="true" editor-type-id="csv-text-editor" />
+      <provider editor-type-id="csv-table-editor">
+        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lab1/hw1_trainingset.csv">
       <provider selected="true" editor-type-id="csv-text-editor">
         <state>
           <caret column="28" lean-forward="true" selection-end-line="1" />
@@ -403,7 +408,17 @@
         <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datafiles/hw3_output.csv">
+    <entry file="file://$PROJECT_DIR$/lab1/hw1_program.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="11" lean-forward="true" selection-start-line="16" selection-start-column="11" selection-end-line="16" selection-end-column="11" />
+          <folding>
+            <element signature="e#177#197#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lab3/hw3_output.csv">
       <provider selected="true" editor-type-id="csv-text-editor">
         <state>
           <caret column="56" lean-forward="true" selection-start-column="56" selection-end-column="56" />
@@ -413,25 +428,22 @@
         <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lab1/hw1_program.py">
+    <entry file="file://$PROJECT_DIR$/lab3/hw3_sklearn.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3165">
-          <caret line="211" column="17" selection-start-line="211" selection-start-column="17" selection-end-line="211" selection-end-column="17" />
+        <state relative-caret-position="450">
+          <caret line="66" column="43" selection-start-line="66" selection-start-column="43" selection-end-line="66" selection-end-column="43" />
           <folding>
-            <element signature="e#177#197#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lab3/lab3sklearnBACKUP.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lab3/lab3sklearn.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="32" selection-start-line="32" selection-start-column="2" selection-end-line="33" selection-end-column="64" />
-          <folding>
-            <element signature="e#235#262#0" expanded="true" />
+            <element signature="e#1587#1614#0" expanded="true" />
+            <element signature="e#300#811#0" />
+            <element signature="e#6864#7007#0" />
+            <element signature="e#5134#6482#0" />
+            <element signature="e#6826#7536#0" />
+            <element signature="e#4494#5863#0" />
+            <element signature="e#9419#10484#0" />
+            <element signature="e#6856#6988#0" />
+            <element signature="e#5545#5732#0" />
+            <element signature="e#5776#6499#0" />
+            <element signature="e#11349#11765#0" />
           </folding>
         </state>
       </provider>

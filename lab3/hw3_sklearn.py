@@ -16,11 +16,14 @@ This program does the following:
 
 The best run I've gotten from this returned the following parameters:
 {
-    'coef0': 1.0, 'C': 1.0, 'shrinking': True, 'accuracy': 0.7555357142857144,
-    'kernel': 'rbf', 'gamma': 'scale', 'tol': 0.0001, 'max_iter': 10000
+    'shrinking': True, 'accuracy': 0.7614285714285713, 'max_iter': 100000,
+    'tol': 0.001, 'gamma': 'scale', 'coef0': 0.0, 'C': 2.0, 'kernel': 'rbf'
 }
 I'm not sure whether you'll be able to reproduce this 76% accurate result, given that I use a partially
 random genetic algorithm to optimize my hyper-parameters. If you don't, run the program again.
+
+I tried normalizing my data using from sklearn.preprocessing.scale() but that ended up reducing my accuracy down to 56%.
+Maybe normalizing the data squishes it together, so it is harder to draw lines between one group of data and another?
 """
 
 
@@ -29,24 +32,26 @@ import numpy as np
 from random import randint
 import warnings
 import time
+import json
 
-# # Disable calls for pre-processing data
-# warnings.filterwarnings('ignore', 'Solver terminated early.*')
+# Disable calls for pre-processing data
+warnings.filterwarnings('ignore', 'Solver terminated early.*')
 
 # Set constants
 features_in_use = 6
-prefix = "../datafiles/"
+prefix = ""
 training_filename = 'hw3_training_data.csv'
 testing_filename = 'hw3_test_data.csv'
 output_filename = 'hw3_output.csv'
+best_item_location = 'hw3_best_item.json'
 number_of_cross_validating_samples = 10
 number_of_genetic_samples = 30
-lift_cap = 0.01
+lift_floor = 0.01
 
 # A list of hyper-parameter options to draw from during my genetic training phase
 HPO = \
 {
-    "C": [0.01, 0.1, 0.2, 0.5, 0.8, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0],
+    "C": [0.01, 0.1, 0.2, 0.5, 0.8, 1.0, 1.5, 1.8, 2.0, 2.5, 3.0, 4.0, 5.0],
     "kernel": ["linear", "poly", "rbf", "sigmoid"],
     "gamma": ["auto", "scale"],
     "coef0": [0.0, 0.1, 0.2, 0.3, 1.0, 10.0],
@@ -61,11 +66,7 @@ hp_lengths = []
 for k in range(len(hp_keys)):
     hp_lengths.append(len(HPO[hp_keys[k]]))
 
-# Input my sample best solution from other runs to breed with the rest
-input_best_item = {
-    'coef0': 1.0, 'C': 1.0, 'shrinking': True, 'accuracy': 0.7555357142857144,
-    'kernel': 'rbf', 'gamma': 'scale', 'tol': 0.0001, 'max_iter': 10000
-}
+calculated_probability_dict = {}
 
 
 # Read in data
@@ -85,6 +86,34 @@ def get_data(filename):
         label_list.append(label)
     file.close()
     return {'features': feature_list_list, 'labels': label_list}
+
+
+# Abstracted SVM generation to save space.
+def make_machine_from_params(op):
+    return SVC(kernel=op["kernel"], max_iter=op["max_iter"], C=op["C"],
+               gamma=op["gamma"], shrinking=op["shrinking"], tol=op["tol"])
+
+
+# Calculate the accuracy of a set of hyper-parameters.
+def calculate_accuracy_of_item(feature_list, label_list, item):
+    print("Training with " + str(item))
+    # Check to ensure that accuracies are not being needlessly recalculated.
+    if item.keys().__contains__("accuracy"):
+        print("Item already has an associated accuracy.")
+    else:
+        item_key = ""
+        for key in hp_keys:
+            item_key += str(item[key]) + ","
+        try:
+            accuracy = calculated_probability_dict[item_key]
+            print("Already calculated. Accuracy is " + "{:.2%}".format(accuracy) + ".")
+        except KeyError:
+            # Generate a machine and run it only if this has not yet been done for the input set of hyper-parameters.
+            machine = make_machine_from_params(item)
+            accuracy = get_accuracy(machine, feature_list, label_list, number_of_cross_validating_samples)
+            calculated_probability_dict[item_key] = accuracy
+            print("Done! Accuracy is " + "{:.2%}".format(accuracy) + ".")
+        item["accuracy"] = accuracy
 
 
 # Calculate net accuracy through 10-fold validation
@@ -121,43 +150,9 @@ def get_accuracy(svm, feature_list, label_list, sample_count):
     return accuracy
 
 
-# Given a final machine, predict the test data's labels
-def predict_test_data(svm):
-    print("Predicting data using optimal model.")
-    global top_file_line
-    test_features = get_data(prefix + testing_filename)['features']
-    output_file = open(prefix + output_filename, 'w')
-    output_file.write(top_file_line[:-1] + ",Label\n")
-    for test_feature in test_features:
-        output_file.write(str(test_feature)[1:-1] + ", " + str(svm.predict([test_feature]))[1:-1] + "\n")
-    output_file.close()
-
-
-# Predict optimal hyper-parameters for an SVM using a genetic algorithm. Stop when the last run gave little extra lift.
-def get_optimal_parameters(feature_list, label_list):
-    hierarchy = generate_initial_hierarchy(feature_list, label_list)
-    done = False
-    counter = 1
-    while not done:
-        # Calculate the gain in accuracy in the top contenders between the last and the current runs.
-        last_hierarchy = hierarchy.copy()
-        update_hierarchy(feature_list, label_list, hierarchy)
-        print("\n Iteration " + str(counter) + ": " + str(hierarchy) + "\n")
-        average_kept_lift = 0.0
-        for i in range(int(len(hierarchy)/2)):
-            average_kept_lift += hierarchy[int(len(hierarchy)/2) + i]["accuracy"] - last_hierarchy[int(len(hierarchy)/2) + i]["accuracy"]
-        average_kept_lift /= int(len(hierarchy)/2)
-        print("Lifted " + str(average_kept_lift) + " during this last run.")
-        # If the gain in accuracy is too low, end the program.
-        if average_kept_lift <= lift_cap:
-            done = True
-        counter += 1
-    print("The winner is: " + str(hierarchy[-1]))
-    return hierarchy[-1]
-
-
 # Generate an initial set of hyper-parameters to grow from, before using genetic weeding methods.
 def generate_initial_hierarchy(feature_list, label_list):
+    print("Generating initial hierarchy.")
     # Randomly select initial values for a number of sample items
     hierarchy = []
     for i in range(number_of_genetic_samples):
@@ -214,24 +209,28 @@ def update_hierarchy(feature_list, label_list, hierarchy):
     return hierarchy
 
 
-# Calculate the accuracy of a set of hyper-parameters.
-def calculate_accuracy_of_item(feature_list, label_list, item):
-    print("Training with " + str(item))
-    # Check to ensure that accuracies are not being needlessly recalculated.
-    if item.keys().__contains__("accuracy"):
-        print("Accuracy already calculated.")
-    else:
-        # Generate a machine and run it only if this has not yet been done for the input set of hyper-parameters.
-        machine = make_machine_from_params(item)
-        accuracy = get_accuracy(machine, feature_list, label_list, number_of_cross_validating_samples)
-        item["accuracy"] = accuracy
-        print("Done! Accuracy is " + "{0:.0%}".format(accuracy) + ".")
-
-
-# Abstracted SVM generation to save space.
-def make_machine_from_params(op):
-    return SVC(kernel=op["kernel"], max_iter=op["max_iter"], C=op["C"],
-               gamma=op["gamma"], shrinking=op["shrinking"], tol=op["tol"])
+# Predict optimal hyper-parameters for an SVM using a genetic algorithm. Stop when the last run gave little extra lift.
+def get_optimal_parameters(feature_list, label_list):
+    hierarchy = generate_initial_hierarchy(feature_list, label_list)
+    done = False
+    counter = 1
+    while not done:
+        # Calculate the gain in accuracy in the top contenders between the last and the current runs.
+        last_hierarchy = hierarchy.copy()
+        update_hierarchy(feature_list, label_list, hierarchy)
+        print("\n Iteration " + str(counter) + ": " + str(hierarchy) + "\n")
+        average_gained_accuracy = 0.0
+        for i in range(int(len(hierarchy)/2)):
+            average_gained_accuracy += hierarchy[int(len(hierarchy)/2) + i]["accuracy"] - last_hierarchy[int(len(hierarchy)/2) + i]["accuracy"]
+        average_gained_accuracy /= int(len(hierarchy)/2)
+        print("Gained " + "{:.2%}".format(average_gained_accuracy) + " average accuracy during this last run.")
+        # If the gain in accuracy is too low, end the program.
+        if average_gained_accuracy <= lift_floor:
+            done = True
+        counter += 1
+    print("The winner is: " + str(hierarchy[-1]))
+    del hierarchy[-1]["accuracy"]
+    return hierarchy[-1]
 
 
 # Quicksort is used to re-order mutant and crossover species into the hierarchy of hyper-parameters.
@@ -239,11 +238,15 @@ def quick_sort(my_list):
     print("Sorting the hierarchy of SVM parameters.")
     quick_sort_helper(my_list, 0, len(my_list) - 1)
     print("Sorting complete.")
+
+
 def quick_sort_helper(my_list, first, last):
     if first < last:
         split_point = partition(my_list, first, last)
         quick_sort_helper(my_list, first, split_point - 1)
         quick_sort_helper(my_list, split_point + 1, last)
+
+
 def partition(my_list, first, last):
     pivot_value = my_list[first]["accuracy"]
     lower_index = first + 1
@@ -266,17 +269,38 @@ def partition(my_list, first, last):
     return higher_index
 
 
+# Given a final machine, predict the test data's labels
+def predict_test_data(svm):
+    print("Predicting data using optimal model.")
+    global top_file_line
+    test_features = get_data(prefix + testing_filename)['features']
+    output_file = open(prefix + output_filename, 'w')
+    output_file.write(top_file_line[:-1] + ",Label\n")
+    for test_feature in test_features:
+        output_file.write(str(test_feature)[1:-1] + ", " + str(svm.predict([test_feature]))[1:-1] + "\n")
+    output_file.close()
+
+
 # Run the code.
 def main():
+    global input_best_item
+    with open(best_item_location, 'r') as fp:
+        input_best_item = json.load(fp)
+        fp.close()
+    print(input_best_item)
+
     start_time = time.time()
     data = get_data(prefix + training_filename)
     feature_list = data['features']
     label_list = data['labels']
-    machine = make_machine_from_params(get_optimal_parameters(feature_list, label_list))
+    optimal_parameters = get_optimal_parameters(feature_list, label_list)
+    machine = make_machine_from_params(optimal_parameters)
     get_accuracy(machine, feature_list, label_list, number_of_cross_validating_samples)
     predict_test_data(machine)
     end_time = time.time()
     print("Run took " + str(end_time - start_time) + " seconds.")
+    with open(best_item_location, 'w') as fp:
+        json.dump(optimal_parameters, fp)
 
 
 main()

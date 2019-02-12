@@ -1,0 +1,1 @@
+{"tol": 0.001, "kernel": "rbf", "coef0": 0.1, "max_iter": 10000, "shrinking": true, "C": 2.0, "gamma": "scale"}
