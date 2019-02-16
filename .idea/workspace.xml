@@ -2,26 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="141fde22-d36d-4d30-b83f-f1dac64bab5b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/datafiles/hw1_output_set.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/datafiles/hw3_best_item.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/datafiles/hw3_output_set.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/datafiles/hw4_best_item.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/datafiles/hw4_output_set.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/datafiles/hw4_test_set.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/datafiles/hw4_training_set.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/datafiles/shared_library.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lab4/W19_Homework4_description.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lab1/hw1_program.py" beforeDir="false" afterPath="$PROJECT_DIR$/lab1/hw1_program.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lab1/hw1_results.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lab1/hw1_testset.csv" beforeDir="false" afterPath="$PROJECT_DIR$/datafiles/hw1_test_set.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lab1/hw1_trainingset.csv" beforeDir="false" afterPath="$PROJECT_DIR$/datafiles/hw1_training_set.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lab3/hw3_best_item.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lab3/hw3_output.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lab3/hw3_personal.py" beforeDir="false" afterPath="$PROJECT_DIR$/datafiles/personal_kernel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lab3/hw3_sklearn.py" beforeDir="false" afterPath="$PROJECT_DIR$/lab3/hw3_genetic_svm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lab3/hw3_test_data.csv" beforeDir="false" afterPath="$PROJECT_DIR$/datafiles/hw3_test_set.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lab3/hw3_training_data.csv" beforeDir="false" afterPath="$PROJECT_DIR$/datafiles/hw3_training_set.csv" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -31,33 +13,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/datafiles/shared_library.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="630">
-              <caret line="42" column="100" selection-start-line="42" selection-start-column="100" selection-end-line="42" selection-end-column="100" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/lab3/hw3_genetic_svm.py">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="645">
-              <caret line="43" column="26" selection-start-line="43" selection-start-column="26" selection-end-line="43" selection-end-column="26" />
-              <folding>
-                <element signature="e#1586#1613#0" expanded="true" />
-              </folding>
+            <state>
+              <caret column="5" selection-start-column="5" selection-end-column="5" />
             </state>
           </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/datafiles/hw4_output_set.csv">
-          <provider editor-type-id="csv-table-editor">
-            <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
-          </provider>
-          <provider selected="true" editor-type-id="csv-text-editor" />
         </entry>
       </file>
     </leaf>
@@ -121,6 +83,7 @@
         <option value="$PROJECT_DIR$/lab1/hw1_program.py" />
         <option value="$PROJECT_DIR$/datafiles/shared_library.py" />
         <option value="$PROJECT_DIR$/lab3/hw3_genetic_svm.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -145,22 +108,12 @@
             <path>
               <item name="cs74" type="b2602c69:ProjectViewProjectNode" />
               <item name="cs74" type="462c0819:PsiDirectoryNode" />
-              <item name="datafiles" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="cs74" type="b2602c69:ProjectViewProjectNode" />
-              <item name="cs74" type="462c0819:PsiDirectoryNode" />
               <item name="lab1" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="cs74" type="b2602c69:ProjectViewProjectNode" />
               <item name="cs74" type="462c0819:PsiDirectoryNode" />
               <item name="lab3" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="cs74" type="b2602c69:ProjectViewProjectNode" />
-              <item name="cs74" type="462c0819:PsiDirectoryNode" />
-              <item name="lab4" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -249,7 +202,7 @@
     <frame x="0" y="-1" width="1920" height="1053" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.12166489" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.12166489" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -265,7 +218,7 @@
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info active="true" anchor="right" id="Run" order="3" visible="true" weight="0.23212379" />
+      <window_info anchor="right" id="Run" order="3" visible="true" weight="0.23212379" />
     </layout>
   </component>
   <component name="editorHistoryManager">
@@ -384,12 +337,6 @@
     <entry file="file://$PROJECT_DIR$/datafiles/hw4_best_item.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/datafiles/hw4_output_set.csv">
-      <provider editor-type-id="csv-table-editor">
-        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
-      </provider>
-      <provider selected="true" editor-type-id="csv-text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/datafiles/hw3_output_set.csv">
       <provider editor-type-id="csv-table-editor">
         <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
@@ -410,13 +357,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datafiles/shared_library.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="42" column="100" selection-start-line="42" selection-start-column="100" selection-end-line="42" selection-end-column="100" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lab3/hw3_genetic_svm.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="645">
@@ -424,6 +364,26 @@
           <folding>
             <element signature="e#1586#1613#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/datafiles/shared_library.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="630">
+          <caret line="42" column="100" selection-start-line="42" selection-start-column="100" selection-end-line="42" selection-end-column="100" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/datafiles/hw4_output_set.csv">
+      <provider editor-type-id="csv-table-editor">
+        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
+      </provider>
+      <provider selected="true" editor-type-id="csv-text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="5" selection-start-column="5" selection-end-column="5" />
         </state>
       </provider>
     </entry>
