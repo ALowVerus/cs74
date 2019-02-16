@@ -3,7 +3,7 @@ import numpy as np
 # Set constants
 features_in_use = 6
 prefix = "../datafiles/"
-training_filename = 'hw3_training_data.csv'
+training_filename = 'hw3_training_set.csv'
 training_fraction = 0.8
 
 

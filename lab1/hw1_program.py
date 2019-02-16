@@ -3,9 +3,11 @@
 
 # A Bayesian classifier that associates 6 variables with a 1 or 0 output.
 # Coded to be easily generalized.
-
 from math import log
 import time
+import sys
+sys.path.insert(0, '../datafiles')
+import shared_library
 
 # Time the run
 start_time = time.time()
@@ -14,10 +16,10 @@ start_time = time.time()
 calibration_frac = 0.8      # Sets the fraction of the training set that should be used for internal tests.
 iv_count = 6                # Sets the number of independent variables.
 dv_count = 1                # Sets the number of dependent variables.
-prefix = ""
-training_set_loc = "hw1_trainingset.csv"    # Name of the training data file.
-test_set_loc = "hw1_testset.csv"            # Name of the test data file.
-results_loc = "hw1_results.csv"             # Name of the results file.
+prefix = "../datafiles/hw1_"
+training_set_loc = "training_set.csv"    # Name of the training data file.
+test_set_loc = "test_set.csv"            # Name of the test data file.
+results_loc = "output_set.csv"             # Name of the results file.
 
 
 # The classifier itself, with appropriate internal methods.
@@ -116,46 +118,28 @@ class Classifier:
 
 
 # Given a filename, create a classifier and train it with the data inside.
-def train(training_filename):
-    # Count lines.
-    set_file = open(training_filename, "r")  # open the file
-    count_lines = len(set_file.readlines()) - 1
-    set_file.close()
-
+def train(data):
     # Read in all items from a file and convert them into an array of items
-    set_file = open(training_filename, "r")  # open the file
-    set_file.readline()  # read title line so it isn't used as data
-    testing_number = int(calibration_frac * count_lines)
+    training_number = int(calibration_frac * len(data))
+    testing_number = len(data) - training_number
+    # Initialize the classifier
     classifier = Classifier()
-    for i in range(testing_number):  # read each line of the testing fraction
-        words = set_file.readline().split(",")
-        features = words[:-1]
-        prior = words[-1]
-        classifier.count_item(features, prior)
-
+    # Read in data
+    for i in range(training_number):  # read each line of the testing fraction
+        classifier.count_item(data[i]["features"], data[i]["label"])
     # Having trained the classifier, pre-process probabilities to save runtime
     classifier.pre_process()
-
     # Test the remaining lines
-    print("Testing starts at line " + str(testing_number) + ".")
+    print("Testing starts at line " + str(training_number) + ".")
     correct_count = 0
-    line_count = 0
-    for line in set_file:
-        words = line.split(",")
-        features = words[:-1]
-        prior = words[-1]
-        projected_value = classifier.predict(features)
-        if projected_value == prior:
+    for i in range(testing_number):
+        projected_value = classifier.predict(data[i + training_number]["features"])
+        if projected_value == data[i + training_number]["label"]:
             correct_count += 1
-        line_count += 1
-
-    # No longer using training set
-    set_file.close()
-
     # Report success (or not).
-    if line_count > 0:
-        print("Correct " + str(correct_count) + " out of " + str(line_count) + " times, for a " + str(
-            100 * float(correct_count) / line_count) + "% success rate.")
+    if testing_number > 0:
+        print("Correct " + str(correct_count) + " out of " + str(testing_number) + " times, for a " + str(
+            100 * float(correct_count) / testing_number) + "% success rate.")
     else:
         print("The entire dataset was used on training. No data was tested.")
 
@@ -163,52 +147,19 @@ def train(training_filename):
 
 
 # Run through the test set of data, get projections
-def predict(testing_filename, output_filename, classifier):
+def predict(data, classifier):
     print("Starting predictions.")
-    test_file = open(testing_filename, "r")
-    output_file = open(output_filename, "w")
-    output_file.write(test_file.readline()[:-1] + ",Label\n")
-    for line in test_file:
-        words = line.split(",")
-        projected_value = classifier.predict(words)
-        output_file.write(words[0] + "," + words[1] + "," + words[2] + "," + words[3] + "," + words[4] + "," + words[5][
-                                                                                                               :-1] + "," + projected_value)
-    test_file.close()
-    output_file.close()
-
+    for item in data:
+        features = item['features']
+        item['label'] = classifier.predict(features)
     print("Done. Check " + results_loc + " for results.")
-
-# # Get the Gini Indices of the values of a given feature.
-# def gini(feature_number, prior_number, training_filename):
-#     set_file = open(training_filename, "r")
-#     posteriors = {}
-#     item_count = 0
-#     for line in set_file:
-#         words = line.split(",")
-#         feature_value = words[feature_number]
-#         prior = words[-prior_number]
-#         try:
-#             posteriors[feature_value][prior] += 1
-#         except KeyError:
-#             try:
-#                 posteriors[feature_value][prior] = 1
-#             except KeyError:
-#                 posteriors[feature_value] = {}
-#                 posteriors[feature_value][prior] = 1
-#         item_count += 1
-#     ginis_calculated = []
-#     for feature_value in posteriors.keys():
-#         feature_value_gini = 1
-#         for prior in posteriors[feature_value].keys():
-#             feature_value_gini -= (posteriors[feature_value][prior] / item_count) ** 2
-#         ginis_calculated.append(feature_value_gini)
-#     aggregegate_gini = sum(ginis_calculated) / len(ginis_calculated)
-#     return aggregegate_gini
-# print(gini(5, 1, training_set_loc))
 
 
 # Run the code
-trained_classifier = train(prefix + training_set_loc)
-predict(prefix + test_set_loc, prefix + results_loc, trained_classifier)
+training_data = shared_library.get_data(prefix + training_set_loc, iv_count)
+trained_classifier = train(training_data)
+testing_data = shared_library.get_data(prefix + test_set_loc, iv_count)
+predict(testing_data, trained_classifier)
+shared_library.write_results(testing_data, prefix + results_loc)
 print("--- %s seconds ---" % (time.time() - start_time))
 

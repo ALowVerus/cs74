@@ -26,27 +26,30 @@ I tried normalizing my data using from sklearn.preprocessing.scale() but that en
 Maybe normalizing the data squishes it together, so it is harder to draw lines between one group of data and another?
 """
 
-
 from sklearn.svm import SVC
 import numpy as np
 from random import randint
 import warnings
 import time
 import json
+import sys
+sys.path.insert(0, '../datafiles')
+import shared_library
 
 # Disable calls for pre-processing data
 warnings.filterwarnings('ignore', 'Solver terminated early.*')
 
 # Set constants
-features_in_use = 6
-prefix = ""
-training_filename = 'hw3_training_data.csv'
-testing_filename = 'hw3_test_data.csv'
-output_filename = 'hw3_output.csv'
-best_item_location = 'hw3_best_item.json'
-number_of_cross_validating_samples = 10
-number_of_genetic_samples = 30
-lift_floor = 0.01
+features_in_use = 6                             # Number of features in data set
+prefix = "../datafiles/hw4_"                    # Used if data files are not in same directory as code
+training_filename = 'training_set.csv'
+testing_filename = 'test_set.csv'
+output_filename = 'output_set.csv'
+best_item_location = 'best_item.json'
+number_of_cross_validating_samples = 3          # Number of sections of cross-validation data and, as a result, number of cross-validation runs
+number_of_genetic_samples = 15                  # Size of natural selection gene pool used in genetic development
+lift_floor = 0.01                               # Minimum amount of extra precision required to merit another run of natural selection
+best_already_written_to_JSON = False            # Set True if "hw3_best_item.json" exists, else set False
 
 # A list of hyper-parameter options to draw from during my genetic training phase
 HPO = \
@@ -54,6 +57,7 @@ HPO = \
     "C": [0.01, 0.1, 0.2, 0.5, 0.8, 1.0, 1.5, 1.8, 2.0, 2.5, 3.0, 4.0, 5.0],
     "kernel": ["linear", "poly", "rbf", "sigmoid"],
     "gamma": ["auto", "scale"],
+    "degree": [1, 2, 3],
     "coef0": [0.0, 0.1, 0.2, 0.3, 1.0, 10.0],
     "shrinking": [True, False],
     "tol": [0.01, 0.001, 0.0001, 0.00001],
@@ -66,32 +70,25 @@ hp_lengths = []
 for k in range(len(hp_keys)):
     hp_lengths.append(len(HPO[hp_keys[k]]))
 
+# A global dictionary for containing probabilities already calculated, such that no repeat calculations are performed
 calculated_probability_dict = {}
 
-
-# Read in data
-def get_data(filename):
-    global top_file_line
-    feature_list_list = []
-    label_list = []
-    file = open(filename)
-    top_file_line = file.readline()
-    for line in file:
-        data_points = line.split(",")
-        # Get the features as an np vector
-        feature_list = [float(x) for x in data_points[0:features_in_use]]
-        # Get the label as a -1 or +1 modifier
-        label = int(data_points[-1])
-        feature_list_list.append(feature_list)
-        label_list.append(label)
-    file.close()
-    return {'features': feature_list_list, 'labels': label_list}
+# The best item I got from my own runs of the data, for breeding in the gene pool. Will be naturally selected out
+# if it is not in fact viable, but will greatly speed up development if it is.
+input_best_item = \
+    {
+        "gamma": "scale", "C": 2.0, "shrinking": True, "kernel": "rbf",
+        "tol": 0.001, "coef0": 0.2, "max_iter": 10000, "degree": 1
+    }
 
 
 # Abstracted SVM generation to save space.
 def make_machine_from_params(op):
-    return SVC(kernel=op["kernel"], max_iter=op["max_iter"], C=op["C"],
-               gamma=op["gamma"], shrinking=op["shrinking"], tol=op["tol"])
+    return SVC(
+        kernel=op["kernel"], max_iter=op["max_iter"], C=op["C"],
+        gamma=op["gamma"], shrinking=op["shrinking"], tol=op["tol"],
+        degree=op["degree"]
+    )
 
 
 # Calculate the accuracy of a set of hyper-parameters.
@@ -150,16 +147,32 @@ def get_accuracy(svm, feature_list, label_list, sample_count):
     return accuracy
 
 
+def get_n_fold_validated_accuracy(accuracy_function, data_set, sample_count):
+    subset_list = []
+    list_size = len(data_set)
+    for i in range(sample_count):
+        subset_list.append(data_set[int(i * list_size / sample_count):int((i + 1) * list_size / sample_count)])
+    accuracy = 0.0
+    for i in range(sample_count):
+        accuracy += accuracy_function(subset_list[i])
+    accuracy /= sample_count
+    return accuracy
+
+
+def make_random_parameters():
+    item = {}
+    for j in range(len(hp_keys)):
+        item[hp_keys[j]] = HPO[hp_keys[j]][randint(0, hp_lengths[j] - 1)]
+    return item
+
+
 # Generate an initial set of hyper-parameters to grow from, before using genetic weeding methods.
 def generate_initial_hierarchy(feature_list, label_list):
     print("Generating initial hierarchy.")
     # Randomly select initial values for a number of sample items
     hierarchy = []
     for i in range(number_of_genetic_samples):
-        next_item = {}
-        for j in range(len(hp_keys)):
-            next_item[hp_keys[j]] = HPO[hp_keys[j]][randint(0, hp_lengths[j] - 1)]
-        hierarchy.append(next_item)
+        hierarchy.append(make_random_parameters())
     # Put my best hyper-parameters from previous runs into the hierarchy to act as breeding stock
     hierarchy[0] = input_best_item
     # Calculate the value of each item
@@ -212,6 +225,7 @@ def update_hierarchy(feature_list, label_list, hierarchy):
 # Predict optimal hyper-parameters for an SVM using a genetic algorithm. Stop when the last run gave little extra lift.
 def get_optimal_parameters(feature_list, label_list):
     hierarchy = generate_initial_hierarchy(feature_list, label_list)
+    print("\n Iteration 0: " + str(hierarchy) + "\n")
     done = False
     counter = 1
     while not done:
@@ -228,9 +242,11 @@ def get_optimal_parameters(feature_list, label_list):
         if average_gained_accuracy <= lift_floor:
             done = True
         counter += 1
-    print("The winner is: " + str(hierarchy[-1]))
-    del hierarchy[-1]["accuracy"]
-    return hierarchy[-1]
+    winner = hierarchy[-1]
+    print("The winner is: " + str(winner))
+    print("Accuracy is " + "{:.2%}".format(winner['accuracy']) + ".")
+    del winner["accuracy"]
+    return winner
 
 
 # Quicksort is used to re-order mutant and crossover species into the hierarchy of hyper-parameters.
@@ -270,37 +286,53 @@ def partition(my_list, first, last):
 
 
 # Given a final machine, predict the test data's labels
-def predict_test_data(svm):
+def predict_test_data(svm, data):
     print("Predicting data using optimal model.")
-    global top_file_line
-    test_features = get_data(prefix + testing_filename)['features']
-    output_file = open(prefix + output_filename, 'w')
-    output_file.write(top_file_line[:-1] + ",Label\n")
-    for test_feature in test_features:
-        output_file.write(str(test_feature)[1:-1] + ", " + str(svm.predict([test_feature]))[1:-1] + "\n")
-    output_file.close()
+    for item in data:
+        item['label'] = svm.predict(np.array([item['features']]))
+
+
+# If the best item has from the last run has already been written to JSON, pull it rather than using the default seed.
+def get_best_from_JSON(target_location):
+    with open(target_location, 'r') as fp:
+        data = json.load(fp)
+        fp.close()
+    return data
+
+
+def throw_best_in_JSON(optimal_parameters, target_location):
+    with open(target_location, 'w') as fp:
+        json.dump(optimal_parameters, fp)
+        fp.close()
 
 
 # Run the code.
 def main():
     global input_best_item
-    with open(best_item_location, 'r') as fp:
-        input_best_item = json.load(fp)
-        fp.close()
-    print(input_best_item)
-
+    # Check whether a dynamic seed location exists
+    input_best_item = get_best_from_JSON(prefix + best_item_location)
+    # Track start time
     start_time = time.time()
-    data = get_data(prefix + training_filename)
-    feature_list = data['features']
-    label_list = data['labels']
-    optimal_parameters = get_optimal_parameters(feature_list, label_list)
+    # Get data from file, separate data into features and labels
+    training_data = shared_library.get_data(prefix + training_filename, features_in_use)
+    training_feature_list = shared_library.list_entry(training_data, 'features')
+    training_label_list = shared_library.list_entry(training_data, 'label')
+    testing_data = shared_library.get_data(prefix + testing_filename, features_in_use)
+    # Get the optimal SVM hyper-parameters
+    optimal_parameters = get_optimal_parameters(training_feature_list, training_label_list)
+    # Make an SVM using the parameters
     machine = make_machine_from_params(optimal_parameters)
-    get_accuracy(machine, feature_list, label_list, number_of_cross_validating_samples)
-    predict_test_data(machine)
+    # Train the SVM
+    machine.fit(np.array(training_feature_list), np.array(training_label_list))
+    # Predict using the SVM
+    predict_test_data(machine, testing_data)
+    # Write test data out to file
+    shared_library.write_results(testing_data, prefix + output_filename)
+    # Save the optimal parameters in a safe location
+    throw_best_in_JSON(optimal_parameters, prefix + best_item_location)
+    # Print runtime
     end_time = time.time()
     print("Run took " + str(end_time - start_time) + " seconds.")
-    with open(best_item_location, 'w') as fp:
-        json.dump(optimal_parameters, fp)
 
 
 main()
