@@ -25,37 +25,37 @@ results_loc = "output_set.csv"             # Name of the results file.
 # The classifier itself, with appropriate internal methods.
 class Classifier:
     def __init__(self):
-        self.prior_counts = {}
-        self.prior_prob_logs = {}
-        self.feature_counts_given_prior = {}
+        self.dv_counts = {}
+        self.dv_prob_logs = {}
+        self.feature_counts_for_dv = {}
         self.feature_counts = {}
         self.total_trained_items = 0
 
-    # Add appropriate counts for prior, count, and count given prior
-    def count_item(self, features, prior):
-        # Increment probability of prior
+    # Add appropriate counts for dv, count, and count given dv
+    def count_item(self, features, dv):
+        # Increment probability of dv
         try:        # try to increment the count
-            self.prior_counts[prior] = self.prior_counts[prior] + 1
+            self.dv_counts[dv] = self.dv_counts[dv] + 1
         except KeyError:     # but the value for the feature may not exist yet, so, if it doesn't
-            self.prior_counts[prior] = 1
-        # Increment probability of feature, given prior
+            self.dv_counts[dv] = 1
+        # Increment probability of feature, given dv
         for feature_number in range(len(features)):
             feature_value = features[feature_number]
             try:
-                self.feature_counts_given_prior[prior][feature_number][feature_value] = \
-                    self.feature_counts_given_prior[prior][feature_number][feature_value] + 1
+                self.feature_counts_for_dv[dv][feature_number][feature_value] = \
+                    self.feature_counts_for_dv[dv][feature_number][feature_value] + 1
             except KeyError:
                 try:
-                    self.feature_counts_given_prior[prior][feature_number][feature_value] = 1
+                    self.feature_counts_for_dv[dv][feature_number][feature_value] = 1
                 except KeyError:
                     try:
-                        self.feature_counts_given_prior[prior][feature_number] = {}
-                        self.feature_counts_given_prior[prior][feature_number][feature_value] = 1
+                        self.feature_counts_for_dv[dv][feature_number] = {}
+                        self.feature_counts_for_dv[dv][feature_number][feature_value] = 1
                     except KeyError:
-                        self.feature_counts_given_prior[prior] = {}
-                        self.feature_counts_given_prior[prior][feature_number] = {}
-                        self.feature_counts_given_prior[prior][feature_number][feature_value] = 1
-        # Increment probability of feature w/o prior
+                        self.feature_counts_for_dv[dv] = {}
+                        self.feature_counts_for_dv[dv][feature_number] = {}
+                        self.feature_counts_for_dv[dv][feature_number][feature_value] = 1
+        # Increment probability of feature w/o dv
         for feature_number in range(len(features)):
             feature_value = features[feature_number]
             try:
@@ -71,50 +71,50 @@ class Classifier:
         self.total_trained_items = self.total_trained_items + 1
 
     def pre_process(self):
-        # Calculate prior probability, having collected all counts
-        for prior in self.prior_counts.keys():
-            prob_prior = self.prior_counts[prior] / sum(self.prior_counts.values())
-            self.prior_prob_logs[prior] = log(prob_prior)
+        # Calculate dv probability, having collected all counts
+        for dv in self.dv_counts.keys():
+            prob_dv = self.dv_counts[dv] / sum(self.dv_counts.values())
+            self.dv_prob_logs[dv] = log(prob_dv)
 
     # Project the dependent variable given a line of independent variables
     def predict(self, features):
         calculated_final_probs = {}
         # For each possible future
-        for prior in self.prior_counts.keys():
-            # Get prior probability
-            prob_prior = self.prior_prob_logs[prior]
-            # Initialized total prior probabilities
-            prob_feature_no_prior_total = 0.0
-            prob_feature_given_prior_total = 0.0
+        for dv in self.dv_counts.keys():
+            # Get dv probability
+            prob_dv = self.dv_prob_logs[dv]
+            # Initialized total dv probabilities
+            prob_feature_no_dv_total = 0.0
+            prob_feature_given_dv_total = 0.0
             for feature_number in range(iv_count):
                 # Get a feature
                 feature = features[feature_number]
-                # Get the probability that the feature is valid w/o prior
+                # Get the probability that the feature is valid w/o dv
                 try:
-                    prob_feature_no_prior = (self.feature_counts[feature_number][feature] + 1) \
+                    prob_feature_no_dv = (self.feature_counts[feature_number][feature] + 1) \
                         / (sum(self.feature_counts[feature_number].values()) + self.total_trained_items)
                 except KeyError:
-                    prob_feature_no_prior = (0 + 1) \
+                    prob_feature_no_dv = (0 + 1) \
                         / (sum(self.feature_counts[feature_number].values()) + self.total_trained_items)
-                prob_feature_no_prior_total += log(prob_feature_no_prior)
-                # Get the probability that the feature is valid with prior
+                prob_feature_no_dv_total += log(prob_feature_no_dv)
+                # Get the probability that the feature is valid with dv
                 try:
-                    prob_feature_given_prior = (self.feature_counts_given_prior[prior][feature_number][feature] + 1) \
-                        / (sum(self.feature_counts_given_prior[prior][feature_number].values()) + self.total_trained_items)
+                    prob_feature_given_dv = (self.feature_counts_for_dv[dv][feature_number][feature] + 1) \
+                        / (sum(self.feature_counts_for_dv[dv][feature_number].values()) + self.total_trained_items)
                 except KeyError:
-                    prob_feature_given_prior = (0 + 1) \
-                        / (sum(self.feature_counts_given_prior[prior][feature_number].values()) + self.total_trained_items)
-                prob_feature_given_prior_total += log(prob_feature_given_prior)
+                    prob_feature_given_dv = (0 + 1) \
+                        / (sum(self.feature_counts_for_dv[dv][feature_number].values()) + self.total_trained_items)
+                prob_feature_given_dv_total += log(prob_feature_given_dv)
             # Bayes Equation to calculate the possibility of future, given features
-            calculated_final_prob = prob_feature_given_prior_total + prob_prior - prob_feature_no_prior_total
-            calculated_final_probs[prior] = calculated_final_prob
-        # Find which prior is valid
-        priors_list = list(calculated_final_probs.keys())
-        max_prior = priors_list[0]
-        for prior in priors_list[1:]:
-            if calculated_final_probs[prior] > calculated_final_probs[max_prior]:
-                max_prior = prior
-        return max_prior
+            calculated_final_prob = prob_feature_given_dv_total + prob_dv - prob_feature_no_dv_total
+            calculated_final_probs[dv] = calculated_final_prob
+        # Find which dv is valid
+        dvs_list = list(calculated_final_probs.keys())
+        max_dv = dvs_list[0]
+        for dv in dvs_list[1:]:
+            if calculated_final_probs[dv] > calculated_final_probs[max_dv]:
+                max_dv = dv
+        return max_dv
 
 
 # Given a filename, create a classifier and train it with the data inside.
@@ -162,4 +162,3 @@ testing_data = shared_library.get_data(prefix + test_set_loc, iv_count)
 predict(testing_data, trained_classifier)
 shared_library.write_results(testing_data, prefix + results_loc)
 print("--- %s seconds ---" % (time.time() - start_time))
-

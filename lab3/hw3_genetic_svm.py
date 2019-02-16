@@ -41,19 +41,18 @@ warnings.filterwarnings('ignore', 'Solver terminated early.*')
 
 # Set constants
 features_in_use = 6                             # Number of features in data set
-prefix = "../datafiles/hw4_"                    # Used if data files are not in same directory as code
+prefix = "../datafiles/hw3_"                    # Used if data files are not in same directory as code
 training_filename = 'training_set.csv'
 testing_filename = 'test_set.csv'
 output_filename = 'output_set.csv'
 best_item_location = 'best_item.json'
-number_of_cross_validating_samples = 3          # Number of sections of cross-validation data and, as a result, number of cross-validation runs
+number_of_cross_validating_samples = 3          # Number of sections of cross-validation data
 number_of_genetic_samples = 15                  # Size of natural selection gene pool used in genetic development
-lift_floor = 0.01                               # Minimum amount of extra precision required to merit another run of natural selection
-best_already_written_to_JSON = False            # Set True if "hw3_best_item.json" exists, else set False
+lift_floor = 0.01                               # Minimum amount of extra precision required to continue testing
+best_already_written_to_json = False            # Set True if "hw3_best_item.json" exists, else set False
 
 # A list of hyper-parameter options to draw from during my genetic training phase
-HPO = \
-{
+HPO = {
     "C": [0.01, 0.1, 0.2, 0.5, 0.8, 1.0, 1.5, 1.8, 2.0, 2.5, 3.0, 4.0, 5.0],
     "kernel": ["linear", "poly", "rbf", "sigmoid"],
     "gamma": ["auto", "scale"],
@@ -235,7 +234,8 @@ def get_optimal_parameters(feature_list, label_list):
         print("\n Iteration " + str(counter) + ": " + str(hierarchy) + "\n")
         average_gained_accuracy = 0.0
         for i in range(int(len(hierarchy)/2)):
-            average_gained_accuracy += hierarchy[int(len(hierarchy)/2) + i]["accuracy"] - last_hierarchy[int(len(hierarchy)/2) + i]["accuracy"]
+            index = int(len(hierarchy)/2) + i
+            average_gained_accuracy += hierarchy[index]["accuracy"] - last_hierarchy[index]["accuracy"]
         average_gained_accuracy /= int(len(hierarchy)/2)
         print("Gained " + "{:.2%}".format(average_gained_accuracy) + " average accuracy during this last run.")
         # If the gain in accuracy is too low, end the program.
@@ -289,18 +289,18 @@ def partition(my_list, first, last):
 def predict_test_data(svm, data):
     print("Predicting data using optimal model.")
     for item in data:
-        item['label'] = svm.predict(np.array([item['features']]))
+        item['label'] = svm.predict(np.array([item['features']]))[0]
 
 
-# If the best item has from the last run has already been written to JSON, pull it rather than using the default seed.
-def get_best_from_JSON(target_location):
+# If the best item has from the last run has already been written to json, pull it rather than using the default seed.
+def get_best_from_json(target_location):
     with open(target_location, 'r') as fp:
         data = json.load(fp)
         fp.close()
     return data
 
 
-def throw_best_in_JSON(optimal_parameters, target_location):
+def throw_best_in_json(optimal_parameters, target_location):
     with open(target_location, 'w') as fp:
         json.dump(optimal_parameters, fp)
         fp.close()
@@ -310,7 +310,7 @@ def throw_best_in_JSON(optimal_parameters, target_location):
 def main():
     global input_best_item
     # Check whether a dynamic seed location exists
-    input_best_item = get_best_from_JSON(prefix + best_item_location)
+    input_best_item = get_best_from_json(prefix + best_item_location)
     # Track start time
     start_time = time.time()
     # Get data from file, separate data into features and labels
@@ -329,7 +329,7 @@ def main():
     # Write test data out to file
     shared_library.write_results(testing_data, prefix + output_filename)
     # Save the optimal parameters in a safe location
-    throw_best_in_JSON(optimal_parameters, prefix + best_item_location)
+    throw_best_in_json(optimal_parameters, prefix + best_item_location)
     # Print runtime
     end_time = time.time()
     print("Run took " + str(end_time - start_time) + " seconds.")

@@ -1,1 +1,1 @@
-{"shrinking": true, "degree": 1, "max_iter": 1000, "tol": 0.0001, "C": 3.0, "kernel": "rbf", "gamma": "scale", "coef0": 0.3}
+{"C": 3.0, "tol": 0.0001, "max_iter": 1000, "shrinking": true, "gamma": "scale", "kernel": "rbf", "degree": 1, "coef0": 0.3}

@@ -40,5 +40,5 @@ def write_results(data, output_location):
     output_file = open(output_location, "w")
     output_file.write("Feature_1,Feature_2,Feature_3,Feature_4,Feature_5,Feature_6,Label\n")
     for item in data:
-        output_file.write(','.join(map(str, item['features'])) + "," + str(item['label'][0]) + "\n")
+        output_file.write(','.join(map(str, item['features'])) + "," + str(item['label']) + "\n")
     output_file.close()

@@ -1,1 +1,1 @@
-{"gamma": "scale", "coef0": 0.1, "tol": 0.0001, "max_iter": 100000, "kernel": "rbf", "shrinking": false, "C": 5.0, "degree": 2}
+{"kernel": "rbf", "degree": 2, "gamma": "scale", "coef0": 0.1, "max_iter": 100000, "tol": 0.0001, "shrinking": false, "C": 5.0}
