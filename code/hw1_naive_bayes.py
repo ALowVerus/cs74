@@ -5,31 +5,32 @@
 # Coded to be easily generalized.
 from math import log
 import time
-import sys
-sys.path.insert(0, '../datafiles')
 import shared_library
 
 # Time the run
 start_time = time.time()
 
 # defining constants
-calibration_frac = 0.8      # Sets the fraction of the training set that should be used for internal tests.
 iv_count = 6                # Sets the number of independent variables.
-dv_count = 1                # Sets the number of dependent variables.
-prefix = "../datafiles/hw1_"
-training_set_loc = "training_set.csv"    # Name of the training data file.
-test_set_loc = "test_set.csv"            # Name of the test data file.
-results_loc = "output_set.csv"             # Name of the results file.
+level_of_validation = 10     # Levels of cross-validation
+prefix = "../datafiles/hw4_"
+training_set_loc = prefix + "training_set.csv"    # Name of the training data file.
+testing_set_loc = prefix + "test_set.csv"            # Name of the test data file.
+results_loc = prefix + "output_set_naive_bayes.csv"             # Name of the results file.
 
 
 # The classifier itself, with appropriate internal methods.
-class Classifier:
-    def __init__(self):
+class NaiveBayesClassifier:
+    def __init__(self, data, validating=True, best_item_url=False, best_item_loc=False):
         self.dv_counts = {}
         self.dv_prob_logs = {}
         self.feature_counts_for_dv = {}
         self.feature_counts = {}
         self.total_trained_items = 0
+        if validating:
+            print("Accurate {:.2%} of the time.".format(self.n_fold_validate(data, level_of_validation)))
+            # Train with entire site
+        self.train_with_data(data)
 
     # Add appropriate counts for dv, count, and count given dv
     def count_item(self, features, dv):
@@ -76,6 +77,25 @@ class Classifier:
             prob_dv = self.dv_counts[dv] / sum(self.dv_counts.values())
             self.dv_prob_logs[dv] = log(prob_dv)
 
+    def train_with_data(self, data):
+        self.dv_counts = {}
+        self.dv_prob_logs = {}
+        self.feature_counts_for_dv = {}
+        self.feature_counts = {}
+        self.total_trained_items = 0
+        # Read in data
+        for datum in data:  # read each line of the testing fraction
+            self.count_item(datum["features"], datum["label"])
+        # Having trained the classifier, pre-process probabilities to save runtime
+        self.pre_process()
+
+    def test_with_data(self, data):
+        correct_count = 0
+        for datum in data:
+            if datum["label"] == self.predict(datum["features"]):
+                correct_count += 1
+        return correct_count / len(data)
+
     # Project the dependent variable given a line of independent variables
     def predict(self, features):
         calculated_final_probs = {}
@@ -116,49 +136,29 @@ class Classifier:
                 max_dv = dv
         return max_dv
 
-
-# Given a filename, create a classifier and train it with the data inside.
-def train(data):
-    # Read in all items from a file and convert them into an array of items
-    training_number = int(calibration_frac * len(data))
-    testing_number = len(data) - training_number
-    # Initialize the classifier
-    classifier = Classifier()
-    # Read in data
-    for i in range(training_number):  # read each line of the testing fraction
-        classifier.count_item(data[i]["features"], data[i]["label"])
-    # Having trained the classifier, pre-process probabilities to save runtime
-    classifier.pre_process()
-    # Test the remaining lines
-    print("Testing starts at line " + str(training_number) + ".")
-    correct_count = 0
-    for i in range(testing_number):
-        projected_value = classifier.predict(data[i + training_number]["features"])
-        if projected_value == data[i + training_number]["label"]:
-            correct_count += 1
-    # Report success (or not).
-    if testing_number > 0:
-        print("Correct " + str(correct_count) + " out of " + str(testing_number) + " times, for a " + str(
-            100 * float(correct_count) / testing_number) + "% success rate.")
-    else:
-        print("The entire dataset was used on training. No data was tested.")
-
-    return classifier
+    def n_fold_validate(self, data_set, sample_count):
+        subset_list = []
+        list_size = len(data_set)
+        for i in range(sample_count):
+            subset_list.append(data_set[int(i * list_size / sample_count):int((i + 1) * list_size / sample_count)])
+        accuracy = 0.0
+        for i in range(sample_count):
+            data_set_without_chosen_sample = []
+            for j in range(sample_count):
+                if i != j:
+                    data_set_without_chosen_sample += subset_list[j]
+            chosen_sample = subset_list[i]
+            self.train_with_data(data_set_without_chosen_sample)
+            accuracy += self.test_with_data(chosen_sample)
+        accuracy /= sample_count
+        return accuracy
 
 
-# Run through the test set of data, get projections
-def predict(data, classifier):
-    print("Starting predictions.")
-    for item in data:
-        features = item['features']
-        item['label'] = classifier.predict(features)
-    print("Done. Check " + results_loc + " for results.")
-
-
-# Run the code
-training_data = shared_library.get_data(prefix + training_set_loc, iv_count)
-trained_classifier = train(training_data)
-testing_data = shared_library.get_data(prefix + test_set_loc, iv_count)
-predict(testing_data, trained_classifier)
-shared_library.write_results(testing_data, prefix + results_loc)
-print("--- %s seconds ---" % (time.time() - start_time))
+# # Run the code.
+# shared_library.main(
+#     Model=NaiveBayesClassifier,
+#     training_set_loc=training_set_loc,
+#     testing_set_loc=testing_set_loc,
+#     results_loc=results_loc,
+#     iv_count=iv_count
+# )
