@@ -4,6 +4,7 @@
 # A Bayesian classifier that associates 6 variables with a 1 or 0 output.
 # Coded to be easily generalized.
 from math import log
+from random import randint
 import time
 import shared_library
 
@@ -21,14 +22,14 @@ results_loc = prefix + "output_set_naive_bayes.csv"             # Name of the re
 
 # The classifier itself, with appropriate internal methods.
 class NaiveBayesClassifier:
-    def __init__(self, data, validating=True, best_item_url=False, best_item_loc=False):
+    def __init__(self, data, validating=True, best_item_url=False, best_item_loc=False, validation_count = 3):
         self.dv_counts = {}
         self.dv_prob_logs = {}
         self.feature_counts_for_dv = {}
         self.feature_counts = {}
         self.total_trained_items = 0
         if validating:
-            print("Accurate {:.2%} of the time.".format(self.n_fold_validate(data, level_of_validation)))
+            print("Accurate {:.2%} of the time.".format(self.n_fold_validate(data, validation_count)))
             # Train with entire site
         self.train_with_data(data)
 
@@ -137,28 +138,41 @@ class NaiveBayesClassifier:
         return max_dv
 
     def n_fold_validate(self, data_set, sample_count):
-        subset_list = []
-        list_size = len(data_set)
-        for i in range(sample_count):
-            subset_list.append(data_set[int(i * list_size / sample_count):int((i + 1) * list_size / sample_count)])
-        accuracy = 0.0
-        for i in range(sample_count):
-            data_set_without_chosen_sample = []
-            for j in range(sample_count):
-                if i != j:
-                    data_set_without_chosen_sample += subset_list[j]
-            chosen_sample = subset_list[i]
-            self.train_with_data(data_set_without_chosen_sample)
-            accuracy += self.test_with_data(chosen_sample)
-        accuracy /= sample_count
+        if sample_count > 0:
+            subset_list = []
+            list_size = len(data_set)
+            for i in range(sample_count):
+                subset_list.append(data_set[int(i * list_size / sample_count):int((i + 1) * list_size / sample_count)])
+            accuracy = 0.0
+            for i in range(sample_count):
+                data_set_without_chosen_sample = []
+                for j in range(sample_count):
+                    if i != j:
+                        data_set_without_chosen_sample += subset_list[j]
+                chosen_sample = subset_list[i]
+                self.train_with_data(data_set_without_chosen_sample)
+                accuracy += self.test_with_data(chosen_sample)
+            accuracy /= sample_count
+        else:
+            training_data = []
+            testing_data = []
+            for datum in data_set:
+                i = randint(0, 4)
+                if i == 0:
+                    testing_data.append(datum)
+                else:
+                    training_data.append(datum)
+            self.train_with_data(training_data)
+            accuracy = self.test_with_data(testing_data)
         return accuracy
 
 
-# # Run the code.
-# shared_library.main(
-#     Model=NaiveBayesClassifier,
-#     training_set_loc=training_set_loc,
-#     testing_set_loc=testing_set_loc,
-#     results_loc=results_loc,
-#     iv_count=iv_count
-# )
+# Run the code.
+shared_library.main(
+    Model=NaiveBayesClassifier,
+    training_set_loc=training_set_loc,
+    testing_set_loc=testing_set_loc,
+    results_loc=results_loc,
+    iv_count=iv_count,
+    validation_count=level_of_validation
+)

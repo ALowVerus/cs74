@@ -12,7 +12,7 @@ results_loc = prefix + 'output_set_binary_multiclasser.csv'
 
 
 class MultiClassNaiveBayesClassifier:
-    def __init__(self, data, validating=False, best_item_url=False, best_item_loc=False):
+    def __init__(self, data, validating=False, best_item_url=False, best_item_loc=False, validation_count=3):
         self.best_splitter_list = []
         self.best_classifier_list = []
         self.store_actual_labels(data)
@@ -51,8 +51,8 @@ class MultiClassNaiveBayesClassifier:
             accuracies = {}
             for dv in working_dvs:
                 self.make_data_true_on_sole_dv(working_data, dv)
-                classifier = NaiveBayesClassifier(working_data)
-                accuracy = classifier.n_fold_validate(working_data, validation_count)
+                classifier = NaiveBayesClassifier(working_data, validating=False)
+                accuracy = classifier.n_fold_validate(working_data, 0)
                 accuracies[dv] = round(accuracy, 4)
             best_dv_splitter = list(working_dvs)[0]
             for key, value in accuracies.items():
@@ -116,5 +116,6 @@ shared_library.main(
     training_set_loc=training_set_loc,
     testing_set_loc=testing_set_loc,
     results_loc=results_loc,
-    iv_count=iv_count
+    iv_count=iv_count,
+    validation_count=validation_count
 )

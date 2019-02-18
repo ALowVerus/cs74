@@ -36,13 +36,14 @@ def write_results(data, output_location):
 
 
 # Run the code.
-def main(Model, best_item_loc=False, training_set_loc=False, testing_set_loc=False, results_loc=False, iv_count=False):
+def main(Model, best_item_loc=False, training_set_loc=False, testing_set_loc=False, results_loc=False,
+         iv_count=False, validation_count=3):
     start_time = time.time()
     # Grab data
     training_data = get_data(training_set_loc, iv_count)
     testing_data = get_data(testing_set_loc, iv_count)
     # Initialize and train the classifier
-    classifier = Model(training_data, validating=True, best_item_loc=best_item_loc)
+    classifier = Model(training_data, validating=True, best_item_loc=best_item_loc, validation_count=validation_count)
     # Predict end value
     predict(classifier, testing_data)
     # Print end values to document
