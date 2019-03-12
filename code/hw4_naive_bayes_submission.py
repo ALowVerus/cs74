@@ -6,15 +6,11 @@
 from math import log
 from random import randint
 import time
-import shared_library
-
-# Time the run
-start_time = time.time()
 
 # defining constants
 iv_count = 6                # Sets the number of independent variables.
 level_of_validation = 10     # Levels of cross-validation
-prefix = "../datafiles/hw4_"
+prefix = "hw4_"
 training_set_loc = prefix + "training_set.csv"    # Name of the training data file.
 testing_set_loc = prefix + "test_set.csv"            # Name of the test data file.
 results_loc = prefix + "output_set_naive_bayes.csv"             # Name of the results file.
@@ -163,12 +159,58 @@ class NaiveBayesClassifier:
         return accuracy
 
 
-# # Run the code.
-# shared_library.main(
-#     Model=NaiveBayesClassifier,
-#     training_set_loc=training_set_loc,
-#     testing_set_loc=testing_set_loc,
-#     results_loc=results_loc,
-#     iv_count=iv_count,
-#     validation_count=level_of_validation
-# )
+# Read in data
+def get_data(filename, features_in_use):
+    global top_file_line
+    file = open(filename)
+    top_file_line = file.readline()
+    data = []
+    for line in file:
+        data_points = line.split(",")
+        # Get the features as an np vector
+        features = [float(x) for x in data_points[0:features_in_use]]
+        # Get the label as a -1 or +1 modifier
+        label = int(data_points[-1])
+        data.append({"label": label, "features": features})
+    file.close()
+    return data
+
+
+# Run through the test set of data, get projections
+def predict(classifier, data):
+    print("Starting predictions.")
+    for item in data:
+        features = item['features']
+        item['label'] = classifier.predict(features)
+    print("Done predicting.")
+
+
+# Write results to output location
+def write_results(data, output_location):
+    output_file = open(output_location, "w")
+    output_file.write("Feature_1,Feature_2,Feature_3,Feature_4,Feature_5,Feature_6,Label\n")
+    for item in data:
+        output_file.write(','.join(map(str, item['features'])) + "," + str(item['label']) + "\n")
+    output_file.close()
+
+
+# Run the code.
+def main():
+    start_time = time.time()
+    # Grab data
+    training_data = get_data(training_set_loc, iv_count)
+    testing_data = get_data(testing_set_loc, iv_count)
+    # Initialize and train the classifier
+    classifier = NaiveBayesClassifier()
+    # Validate
+    if level_of_validation > 0:
+        print("Validated accuracy is {:.2%}.".format(classifier.n_fold_validate(training_data, level_of_validation)))
+    # Train
+    classifier.train_with_data(training_data)
+    # Predict end value
+    predict(classifier, testing_data)
+    # Print end values to document
+    write_results(testing_data, results_loc)
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+main()

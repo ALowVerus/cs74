@@ -13,8 +13,9 @@ results_loc = prefix + 'output_set_binary_multiclasser.csv'
 
 class MultiClassNaiveBayesClassifier:
     def __init__(self, best_item_loc=False):
-        self.best_splitter_list = []
-        self.best_classifier_list = []
+        self.accuracies = {}
+        self.classifiers = {}
+        self.dvs = {}
 
     def store_actual_labels(self, data):
         for datum in data:
@@ -22,9 +23,9 @@ class MultiClassNaiveBayesClassifier:
                 datum['actual_label'] = datum['label']
 
     def train_with_data(self, data):
+        self.accuracies = {}
+        self.classifiers = {}
         self.store_actual_labels(data)
-        self.best_splitter_list = []
-        self.best_classifier_list = []
         # Enumerate labels, split data by labels
         dv_split_data = {}
         for datum in data:
@@ -35,37 +36,31 @@ class MultiClassNaiveBayesClassifier:
                 dv_split_data[dv] = []
                 dv_split_data[dv].append(datum)
         # Make a copy of the data to freely manipulate
-        working_dvs = set(dv_split_data.keys())
-        # Split data by labels
-        best_splitter_list = []
-        best_classifier_list = []
+        self.dvs = list(dv_split_data.keys())
         # Generate splitter list and classifiers
-        for i in range(len(list(dv_split_data.keys()))):
-            # Make a subset of data
-            working_data = []
-            for dv in working_dvs:
-                working_data.extend(dv_split_data[dv])
-            # Get accuracies of each splitter
-            accuracies = {}
-            classifier = NaiveBayesClassifier()
-            for dv in working_dvs:
-                self.make_data_true_on_sole_dv(working_data, dv)
-                accuracy = classifier.n_fold_validate(working_data, 0)
-                accuracies[dv] = round(accuracy, 4)
-            # Find the best splitter
-            best_dv_splitter = list(working_dvs)[0]
-            for key, value in accuracies.items():
-                if value > accuracies[best_dv_splitter]:
-                    best_dv_splitter = key
-            print("Best splitter was " + str(best_dv_splitter) + ". " + str(accuracies))
-            # Retrain with all data
-            self.make_data_true_on_sole_dv(working_data, best_dv_splitter)
-            classifier.train_with_data(working_data)
-            best_classifier_list.append(classifier)
-            best_splitter_list.append(best_dv_splitter)
-            working_dvs.remove(best_dv_splitter)
-        self.best_splitter_list = best_splitter_list
-        self.best_classifier_list = best_classifier_list
+        for dv_1 in self.dvs:
+            for dv_2 in self.dvs:
+                if dv_1 < dv_2:
+                    # Make a subset of data
+                    working_data = []
+                    working_data.extend(dv_split_data[dv_1])
+                    working_data.extend(dv_split_data[dv_2])
+                    # Get accuracies of each splitter
+                    classifier = NaiveBayesClassifier()
+                    self.make_data_true_on_sole_dv(working_data, dv_1)
+                    accuracy = classifier.n_fold_validate(working_data, 0)
+                    try:
+                        self.accuracies[dv_1][dv_2] = round(accuracy, 4)
+                    except KeyError:
+                        self.accuracies[dv_1] = {}
+                        self.accuracies[dv_1][dv_2] = round(accuracy, 4)
+                    # Retrain with all data
+                    classifier.train_with_data(working_data)
+                    try:
+                        self.classifiers[dv_1][dv_2] = classifier
+                    except KeyError:
+                        self.classifiers[dv_1] = {}
+                        self.classifiers[dv_1][dv_2] = classifier
 
     def test_with_data(self, data):
         correct_count = 0
@@ -75,15 +70,25 @@ class MultiClassNaiveBayesClassifier:
         return correct_count / len(data)
 
     def predict(self, features):
-        done = False
-        i = 0
-        while not done:
-            prediction = self.best_classifier_list[i].predict(features)
-            if prediction == 1:
-                done = True
-            else:
-                i += 1
-        return self.best_splitter_list[i]
+        confidences = {}
+        for dv in self.dvs:
+            confidences[dv] = 0.0
+        for dv_1 in self.dvs:
+            for dv_2 in self.dvs:
+                if dv_1 < dv_2:
+                    prediction = self.classifiers[dv_1][dv_2].predict(features)
+                    reliability = self.accuracies[dv_1][dv_2]
+                    if prediction == 1:
+                        winner = dv_1
+                    else:
+                        winner = dv_2
+                    confidences[winner] += reliability
+        # Find best confidence
+        best = self.dvs[0]
+        for dv in self.dvs:
+            if confidences[dv] > confidences[best]:
+                best = dv
+        return best
 
     def make_data_true_on_sole_dv(self, data, target_dv):
         for datum in data:

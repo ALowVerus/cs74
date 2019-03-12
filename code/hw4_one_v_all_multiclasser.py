@@ -11,10 +11,11 @@ testing_set_loc = prefix + 'test_set.csv'
 results_loc = prefix + 'output_set_binary_multiclasser.csv'
 
 
-class MultiClassNaiveBayesClassifier:
+class OneVsAllClassifier:
     def __init__(self, best_item_loc=False):
-        self.best_splitter_list = []
-        self.best_classifier_list = []
+        self.dvs = []
+        self.classifiers = {}
+        self.accuracies = {}
 
     def store_actual_labels(self, data):
         for datum in data:
@@ -23,49 +24,24 @@ class MultiClassNaiveBayesClassifier:
 
     def train_with_data(self, data):
         self.store_actual_labels(data)
-        self.best_splitter_list = []
-        self.best_classifier_list = []
+        self.dvs = set()
+        self.classifiers = {}
+        self.accuracies = {}
         # Enumerate labels, split data by labels
-        dv_split_data = {}
         for datum in data:
-            dv = datum['actual_label']
-            try:
-                dv_split_data[dv].append(datum)
-            except KeyError:
-                dv_split_data[dv] = []
-                dv_split_data[dv].append(datum)
+            self.dvs.add(datum['actual_label'])
         # Make a copy of the data to freely manipulate
-        working_dvs = set(dv_split_data.keys())
-        # Split data by labels
-        best_splitter_list = []
-        best_classifier_list = []
-        # Generate splitter list and classifiers
-        for i in range(len(list(dv_split_data.keys()))):
-            # Make a subset of data
-            working_data = []
-            for dv in working_dvs:
-                working_data.extend(dv_split_data[dv])
+        self.dvs = list(self.dvs)
+        # Generate classifiers
+        for dv in self.dvs:
             # Get accuracies of each splitter
-            accuracies = {}
             classifier = NaiveBayesClassifier()
-            for dv in working_dvs:
-                self.make_data_true_on_sole_dv(working_data, dv)
-                accuracy = classifier.n_fold_validate(working_data, 0)
-                accuracies[dv] = round(accuracy, 4)
-            # Find the best splitter
-            best_dv_splitter = list(working_dvs)[0]
-            for key, value in accuracies.items():
-                if value > accuracies[best_dv_splitter]:
-                    best_dv_splitter = key
-            print("Best splitter was " + str(best_dv_splitter) + ". " + str(accuracies))
-            # Retrain with all data
-            self.make_data_true_on_sole_dv(working_data, best_dv_splitter)
-            classifier.train_with_data(working_data)
-            best_classifier_list.append(classifier)
-            best_splitter_list.append(best_dv_splitter)
-            working_dvs.remove(best_dv_splitter)
-        self.best_splitter_list = best_splitter_list
-        self.best_classifier_list = best_classifier_list
+            self.make_data_true_on_sole_dv(data, dv)
+            accuracy = classifier.n_fold_validate(data, 0)
+            self.accuracies[dv] = round(accuracy, 4)
+            classifier.train_with_data(data)
+            self.classifiers[dv] = classifier
+        self.quick_sort(self.dvs)
 
     def test_with_data(self, data):
         correct_count = 0
@@ -78,12 +54,14 @@ class MultiClassNaiveBayesClassifier:
         done = False
         i = 0
         while not done:
-            prediction = self.best_classifier_list[i].predict(features)
+            prediction = self.classifiers[self.dvs[i]].predict(features)
             if prediction == 1:
+                done = True
+            elif i >= len(self.dvs) - 1:
                 done = True
             else:
                 i += 1
-        return self.best_splitter_list[i]
+        return self.dvs[i]
 
     def make_data_true_on_sole_dv(self, data, target_dv):
         for datum in data:
@@ -109,10 +87,46 @@ class MultiClassNaiveBayesClassifier:
         total_accuracy /= sample_count
         return total_accuracy
 
+    def quick_sort(self, my_list):
+        print("Sorting the hierarchy of SVM parameters.")
+        self.quick_sort_helper(my_list, 0, len(my_list) - 1)
+        for i in range(int(len(my_list) / 2)):
+            temp = my_list[i]
+            my_list[i] = my_list[-(1 + i)]
+            my_list[-(1 + i)] = temp
+        print("Sorting complete.")
+
+    def quick_sort_helper(self, my_list, first, last):
+        if first < last:
+            split_point = self.partition(my_list, first, last)
+            self.quick_sort_helper(my_list, first, split_point - 1)
+            self.quick_sort_helper(my_list, split_point + 1, last)
+
+    def partition(self, my_list, first, last):
+        pivot_value = self.accuracies[my_list[first]]
+        lower_index = first + 1
+        higher_index = last
+        done = False
+        while not done:
+            while lower_index <= higher_index and self.accuracies[my_list[lower_index]] <= pivot_value:
+                lower_index += 1
+            while lower_index <= higher_index and self.accuracies[my_list[higher_index]] >= pivot_value:
+                higher_index -= 1
+            if lower_index > higher_index:
+                done = True
+            else:
+                temp = my_list[lower_index]
+                my_list[lower_index] = my_list[higher_index]
+                my_list[higher_index] = temp
+        temp = my_list[first]
+        my_list[first] = my_list[higher_index]
+        my_list[higher_index] = temp
+        return higher_index
+
 
 # Run the code.
 shared_library.main(
-    Model=MultiClassNaiveBayesClassifier,
+    Model=OneVsAllClassifier,
     training_set_loc=training_set_loc,
     testing_set_loc=testing_set_loc,
     results_loc=results_loc,

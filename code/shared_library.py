@@ -43,7 +43,12 @@ def main(Model, best_item_loc=False, training_set_loc=False, testing_set_loc=Fal
     training_data = get_data(training_set_loc, iv_count)
     testing_data = get_data(testing_set_loc, iv_count)
     # Initialize and train the classifier
-    classifier = Model(training_data, validating=True, best_item_loc=best_item_loc, validation_count=validation_count)
+    classifier = Model(best_item_loc=best_item_loc)
+    # Validate
+    if validation_count > 0:
+        print("Validated accuracy is {:.2%}.".format(classifier.n_fold_validate(training_data, validation_count)))
+    # Train
+    classifier.train_with_data(training_data)
     # Predict end value
     predict(classifier, testing_data)
     # Print end values to document
